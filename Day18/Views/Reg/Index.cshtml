@@ -1,0 +1,171 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+@using Day18.Models
+@model RegisterModel
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+
+    <title>Index</title>
+</head>
+
+<body>
+    <form id="formId" @Html.BeginForm("Register", "Reg", null, FormMethod.Post, new { enctype = "multipart/form-data" })>
+        <div>
+            <table border="1" cellspacing="0" width="200" height="300">
+                <tr>
+                    <td>
+                        <input type="text" name="name" placeholder="姓名" value=@Model.Name />
+                    </td>
+                    <td rowspan="3"><div style="height:auto; width:auto"><img src="" alt="" /></div></td>
+                </tr>
+                <tr>
+                    <td>
+                        @if (Model.Sex == SexEnum.Female)
+                        {
+                            <input data-value="1" name="sexGroup" id="female" type="radio" checked="checked" onclick="CheShowSex('#female')" /> @:女
+                            <input name="sexGroup" id="male" type="radio" data-value="0" onclick="CheShowSex('#male')" /> @:男
+                        }
+                        else
+                        {
+                            <input data-value="1" name="sexGroup" id="female" type="radio" onclick="CheShowSex('#female')" /> @:女
+                            <input name="sexGroup" id="male" type="radio" data-value="0" checked="checked" onclick="CheShowSex('#male')" /> @:男
+                        }
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" value="@Model.Age" name="age" placeholder="年龄" />
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <input id="exp" type="hidden" value="@Model.StudyExp" />
+                        <select id="StudyExpForId" name="StudyExp">
+                            <option value="-1" data-value="-1">选择学历</option>
+                            <option data-value="0" value="0">本科</option>
+                            <option data-value="1" value="1">大专</option>
+                            <option data-value="2" value="2">高中</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input id="File1" name="headImg" type="file" value="上传头像" required="required" multiple="multiple" />
+                        @*<input type="submit" id="btnSave" class="btn btn-default" value="上 传" />*@
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        爱好
+                    </td>
+                    <td>
+                        @if (Model.Fav != null && Model.Fav.Contains("Swimming"))
+                        {
+                            <input type="checkbox" value="Swimming" checked="checked" name="Fav" onclick="getFav()" /> @:游泳
+                        }
+                        else
+                        {
+                            <input type="checkbox" value="Swimming" checked="" name="Fav" onclick="getFav()" /> @:游泳
+                        }
+                        @if (Model.Fav != null && Model.Fav.Contains("Reading"))
+                        {
+                            <input type="checkbox" value="Reading" name="Fav" checked="checked" onclick="getFav()" />@:看书
+                        }
+                        else
+                        {
+                            <input type="checkbox" value="Reading" name="Fav" onclick="getFav()" />@:看书
+                        }
+                        @if (Model.Fav != null && Model.Fav.Contains("Running"))
+                        {
+                            <input type="checkbox" value="Running" name="Fav" checked="checked" onclick="getFav()" /> @:跑步
+                        }
+                        else
+                        {
+                            <input type="checkbox" value="Running" name="Fav" onclick="getFav()" /> @:跑步
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <textarea id="TextArea1" name="Motto" rows="2" cols="20"></textarea>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input id="register" type="submit" value="注 册" /></td>
+                </tr>
+            </table>
+        </div>
+        <input type="hidden" id="sex" name="sex" value="" />
+        @*<input type="hidden" id="StudyExpId" name="StudyExp" />*@
+
+        <input type="hidden" id="Fav" name="Fav" value="" />
+    </form>
+</body>
+
+</html>
+
+
+<script>
+    //var a = $("#StudyExpForId").val();
+    var expIntVal = 0;
+    var expVal = $("#exp").val();
+    if (expVal == "Bachelor") {
+        expIntVal = 0;
+    }
+    else if (expVal == "College") {
+        expIntVal = 1;
+    }
+    else if (expVal == "HighSchool") {
+        expIntVal = 2;
+    }
+
+    $("#StudyExpForId").val(expIntVal);
+
+    $(function () {
+        $(".fav").click(function () {
+            $.ajax({
+                url: "/Reg/Register",
+                type: 'post',
+                data: $("#formId").serialize(),
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            }
+            )
+        })
+    });
+
+    // 性别
+    function CheShowSex(index) {
+        $("#sex").val($(index).attr("data-value"));
+    }
+
+    function get() {
+        //var txt = $("#StudyExpForId").find("option:selected").val();
+        //var value = $('#StudyExpForId').find("option:selected").attr("data-value");
+        $("#StudyExpId").val($('#StudyExpForId').find("option:selected").attr("data-value"));
+    }
+
+    function getFav() {
+        var arr = new Array();
+        $("[name=Fav]").each(function (i, e) {
+            if ($(e).is(":checked")) {
+                arr.push($(e).attr("value"));
+            }
+        });
+        $("#Fav").html(arr.join(","));
+    }
+
+</script>

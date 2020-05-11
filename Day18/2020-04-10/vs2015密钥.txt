@@ -1,0 +1,4 @@
+专业版：HMGNV-WCYXV-X7G9W-YCX63-B98R2
+企业版：HM6NR-QXX7C-DFW2Y-8B82K-WTYJV
+server=114.55.27.208;database=jhm_db;uid=root;pwd=xctech@2016$;connection timeout=600
+server=localhost;database=jhm_db;uid=root;pwd=cang;connection timeout=600
